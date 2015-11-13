@@ -17,6 +17,7 @@
     "reactify": "~1.1.1",
     "jquery": "~2.1.4",
     "bootstrap": "~3.3.5",
-    "gulp-concat": "~2.6.0"
+    "gulp-concat": "~2.6.0",
+    "gulp-eslint": "~1.1.0"
   }
 }
