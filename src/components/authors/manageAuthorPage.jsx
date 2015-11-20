@@ -3,7 +3,8 @@
 var React = require('react');
 var Router = require('react-router');
 var AuthorForm = require('./authorForm.jsx');
-var AuthorApi = require('../../api/authorApi.js');
+var AuthorActions = require('../../actions/authorActions.js');
+var AuthorStore = require('../../stores/authorStore.js');
 var toastr = require('toastr');
 
 var ManageAuthorPage = React.createClass({
@@ -12,37 +13,37 @@ var ManageAuthorPage = React.createClass({
   ],
 
   statics: {
-    willTransitionFrom: function(transition, component) {
+    willTransitionFrom: function (transition, component) {
       if (component.state.dirty && !confirm('Leave without saving?')) {
         transition.abort();
       }
     }
   },
 
-  getInitialState: function() {
+  getInitialState: function () {
     return {
-      author: { id: '', firstName: '', lastName: '' },
+      author: {id: '', firstName: '', lastName: ''},
       errors: {},
       dirty: false
     };
   },
 
-  componentWillMount: function() {
+  componentWillMount: function () {
     var authorId = this.props.params.id; //from the path '/author:id'
 
     if (authorId) {
-      this.setState({author: AuthorApi.getAuthorById(authorId) });
+      this.setState({author: AuthorStore.getAuthorById(authorId)});
     }
   },
 
-  setAuthorState: function(event) {
+  setAuthorState: function (event) {
     this.setState({dirty: true});
     var field = event.target.name;
     this.state.author[field] = event.target.value;
     return this.setState({author: this.state.author});
   },
 
-  authorFormIsValid: function() {
+  authorFormIsValid: function () {
     var formIsValid = true;
     this.state.errors = {}; //clear any previous errors.
 
@@ -60,20 +61,24 @@ var ManageAuthorPage = React.createClass({
     return formIsValid;
   },
 
-  saveAuthor: function(event) {
+  saveAuthor: function (event) {
     event.preventDefault();
 
     if (!this.authorFormIsValid()) {
       return;
     }
 
-    AuthorApi.saveAuthor(this.state.author);
+    if(this.state.author.id){
+      AuthorActions.updateAuthor(this.state.author);
+    } else {
+      AuthorActions.createAuthor(this.state.author);
+    }
     this.setState({dirty: false});
     toastr.success('Author saved.');
     this.transitionTo('authors');
   },
 
-  render: function() {
+  render: function () {
     return (
       <AuthorForm
         author={this.state.author}

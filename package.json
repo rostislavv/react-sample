@@ -23,6 +23,7 @@
     "react-router": "~0.13.3",
     "react": "~0.13.3",
     "lodash": "~3.10.1",
-    "toastr": "~2.1.2"
+    "toastr": "~2.1.2",
+    "object-assign": "~4.0.1"
   }
 }
